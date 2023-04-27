@@ -5,6 +5,5 @@
 + Link data:
 ![Screenshot (610)](https://user-images.githubusercontent.com/126843941/234768048-7c8cc06c-c7dc-48d9-afce-e5d00f6f6de2.jpg)
 + Link ảnh:
-![Uploading Screenshot (612).jpg…]()
-
+![Screenshot (612)](https://user-images.githubusercontent.com/126843941/234768260-d1571654-c08d-4a9b-9c68-e156667cb191.jpg)
 ***Chúc các bạn thành công!!!
