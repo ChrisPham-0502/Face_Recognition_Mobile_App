@@ -13,4 +13,5 @@
 + Sau đó chọn "Service Account", bên dưới sẽ hiện ra một bảng code và những lựa chọn NNLT. Chọn Python và bấm "Generate new private key"
 ![image](https://user-images.githubusercontent.com/126843941/234769203-c259357c-bb36-4b4a-9e5b-81a936c43409.png)
 + Sau khi có được file thì các bạn liên kết vào code thôi. 
++ 
 ***Chúc các bạn thành công!!!
