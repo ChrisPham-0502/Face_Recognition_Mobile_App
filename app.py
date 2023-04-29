@@ -137,6 +137,21 @@ def checkin(encodeList, studentID):
             cv2.waitKey(0)
             break
 
+# Thêm học viên mới
+def add_new():
+    name = input("Nhập họ tên:")
+    id = input("Nhập id (chữ cái đầu trong tên + ngày tháng năm sinh):")
+    phone = input("Nhập số điện thoại vào:")
+    info = {"Name":name,
+            "Phone":phone,
+            "Skill":"Beginner",
+            "Slots": 1}
+    try:
+        ref = db.reference("Students")
+        ref.child(id).set(info)
+        print("Đã thêm thành công.\n")
+    except:
+        print("Thêm thất bại.\n")
 '''
 ___________________________________________________________________________________________________________________________
 RUNNING PROGRAM
@@ -153,12 +168,14 @@ while True:
         print(f'{i}:{options[i]}')
     
     try:
-        n = int(input("Hãy nhập lựa chọn của bạn ở đây:\n"))
+        n = int(input("Hãy nhập lựa chọn của bạn ở đây:"))
     except:
         print("Bạn đã nhập sai, hãy nhập lại!\n")
         continue
-
-    if n==2:
+    
+    if n==1:
+        add_new():
+    elif n==2:
         checkin(encodeList, studentID)
     elif n==4:
         break
