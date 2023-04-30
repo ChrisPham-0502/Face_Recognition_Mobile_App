@@ -136,6 +136,9 @@ def checkin(encodeList, studentID):
             cv2.imshow("Result", imgMode_list[1])
             cv2.waitKey(0)
             break
+    
+    Student_dict = {id:studentInfo} # danh sách học viên được điểm danh 
+    return Student_dict
 
 # Thêm học viên mới
 def add_new():
@@ -152,6 +155,21 @@ def add_new():
         print("Đã thêm thành công.\n")
     except:
         print("Thêm thất bại.\n")
+
+# Cập nhật kĩ năng học viên sau mỗi buổi
+def update_info(dict, Student_name):
+    skill = input("Kĩ năng học được hôm nay: ")
+    ref = db.reference("Students")
+    for key, value in dict.items():
+        if value["Name"] == Student_name:
+            value["Skill"] = skill
+            try:
+                ref.child(key).set(value)
+                print("Cập nhật thành công")
+            except:
+                print("Cập nhật thất bại!")
+            break
+    return dict
 '''
 ___________________________________________________________________________________________________________________________
 RUNNING PROGRAM
@@ -162,20 +180,38 @@ options = {1:"Thêm học viên",
            3:"Chỉnh sửa",
            4:"Thoát"}
 
+student_dict = {}   # Chứa thông tin các học viên được điểm danh
+student_list = []   # Chứa tên các học viên được điểm danh 
 
 while True:
     for i in options:
         print(f'{i}:{options[i]}')
     
     try:
-        n = int(input("Hãy nhập lựa chọn của bạn ở đây:"))
+        n = int(input("Hãy nhập lựa chọn của bạn ở đây: "))
     except:
         print("Bạn đã nhập sai, hãy nhập lại!\n")
         continue
     
     if n==1:
-        add_new():
+        add_new()
     elif n==2:
-        checkin(encodeList, studentID)
+        student_dict.update(checkin(encodeList, studentID))
+    elif n==3:
+        for id, stu in student_dict.items():
+            i = 1
+            print(f'{i}-{stu["Name"]}')
+            student_list.append(stu["Name"])
+            i+=1
+        while True:
+            try:
+                select = int(input("Chọn học viên theo số: "))
+                break
+            except:
+                print("Bạn đã nhập sai, hãy chọn lại!")
+                continue
+        update_info(student_dict,student_list[select-1])
+        print(student_dict)
     elif n==4:
+        print("Thoát chương trình thành công!")
         break
