@@ -20,21 +20,20 @@ ________________________________________________________________________________
 ENCODING FACE IMAGE
 ____________________________________________________________________________________________________________________
 '''
-# Importing the student's image
-folderpath = "Images"
-studentpath = os.listdir(folderpath)
-imgList = []
-studentID = []
+def create_dataset():
+    id = input("Nhập id ở đây:")
+    vidStream = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
-for path in studentpath:
-    imgList.append(cv2.imread(os.path.join(folderpath, path)))
-    studentID.append(os.path.splitext(path)[0])
+    while True:
 
-    fileName = f'{folderpath}/{path}'
-    bucket = storage.bucket()
-    blob = bucket.blob(fileName)
-    blob.upload_from_filename(fileName)
+        ret, frame = vidStream.read()
 
+        cv2.imshow("test window", frame)
+        if cv2.waitKey(10) == ord('q'):
+            cv2.imwrite("Images/{}.jpg".format(id), frame)
+            cv2.destroyAllWindows()
+            break
+    return id
 # Mã hóa ảnh
 def findEncoding(imageList):
     encodeList = []
@@ -44,12 +43,28 @@ def findEncoding(imageList):
         encodeList.append(encode)
     return encodeList
 
-encodeList = findEncoding(imgList)
-encode_Known_With_Id = [encodeList, studentID]
-file = open("encodefile.p", 'wb')
-pickle.dump(encode_Known_With_Id, file)
-file.close()
-print("File saved.")
+# Importing the student's image
+def load_img():
+    folderpath = "Images"
+    studentpath = os.listdir(folderpath)
+    imgList = []
+    studentID = []
+
+    for path in studentpath:
+        imgList.append(cv2.imread(os.path.join(folderpath, path)))
+        studentID.append(os.path.splitext(path)[0])
+
+        fileName = f'{folderpath}/{path}'
+        bucket = storage.bucket()
+        blob = bucket.blob(fileName)
+        blob.upload_from_filename(fileName)
+
+    encodeList = findEncoding(imgList)
+    encode_Known_With_Id = [encodeList, studentID]
+    file = open("encodefile.p", 'wb')
+    pickle.dump(encode_Known_With_Id, file)
+    file.close()
+    print("File saved.")
 '''
 ____________________________________________________________________________________________________________________
 DEFINING FACE RECOGNITION SUPPORT FUNCTIONS
@@ -121,10 +136,14 @@ def checkin(encodeList, studentID):
                 y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
                 bbox = (79+x1,80+y1, x2-x1, y2-y1)
                 imgBackground = cvzone.cornerRect(imgBackground, bbox, rt=0)
+                imgMode_list[0] = cv2.resize(imgMode_list[0], (140, 131))
+                imgBackground[23:23+131, 584:584+140] = imgMode_list[0]
                 id = studentID[matchesIndex]
                 if counter == 0:
                     counter = 1
             else:
+                imgMode_list[2] = cv2.resize(imgMode_list[2], (140, 131))
+                imgBackground[23:23+131, 584:584+140] = imgMode_list[2]
                 print("Match failed!")
         if counter !=0:
             if counter == 1: 
@@ -169,9 +188,6 @@ def checkin(encodeList, studentID):
         cv2.imshow("Background", imgBackground)
         if cv2.waitKey(10) == ord('q'):
             cv2.destroyWindow("Background")
-            cv2.imshow("Mode", imgMode_list[0])
-            cv2.waitKey(2000)
-            cv2.destroyWindow("Mode")
             cv2.imshow("Result", imgMode_list[1])
             cv2.waitKey(0)
             break
@@ -180,9 +196,8 @@ def checkin(encodeList, studentID):
     return Student_dict
 
 # Thêm học viên mới
-def add_new():
+def add_new(id):
     name = input("Nhập họ tên:")
-    id = input("Nhập id (chữ cái đầu trong tên + ngày tháng năm sinh):")
     phone = input("Nhập số điện thoại vào:")
     info = {"Name":name,
             "Phone":phone,
@@ -209,6 +224,7 @@ def update_info(dict, Student_name):
                 print("Cập nhật thất bại!")
             break
     return dict
+
 '''
 ___________________________________________________________________________________________________________________________
 RUNNING PROGRAM
@@ -233,7 +249,9 @@ while True:
         continue
     
     if n==1:
-        add_new()
+        id = create_dataset()
+        load_img()
+        add_new(id)
     elif n==2:
         student_dict.update(checkin(encodeList, studentID))
     elif n==3:
