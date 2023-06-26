@@ -1,3 +1,4 @@
+Flask==2.3.2
 flask_cors==3.0.10
 firebase_admin==6.1.0
 opencv_python==4.7.0.72
