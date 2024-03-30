@@ -13,8 +13,8 @@ from datetime import datetime
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred,{
-    "databaseURL" : "https://faceattendancerealtime-32bb4-default-rtdb.firebaseio.com/",
-    "storageBucket":"faceattendancerealtime-32bb4.appspot.com"})
+    "databaseURL" : "###",
+    "storageBucket":"###"})
 
 app = flask.Flask(__name__)
 
